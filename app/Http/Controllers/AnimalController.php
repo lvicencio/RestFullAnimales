@@ -4,8 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class Animal extends Controller
+class AnimalController extends Controller
 {
+    public function showAll()
+    {
+      return 'todos';
+    }
+
     /**
      * Display a listing of the resource.
      *
