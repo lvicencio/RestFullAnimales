@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tipo extends Model
 {
-  use Notifiable;
 
   /**
    * The attributes that are mass assignable.
@@ -16,6 +15,8 @@ class Tipo extends Model
   protected $fillable = [
       'nombre', 'caracteristicas',
   ];
+
+  protected $hidden = ['created_at', 'updated_at'];
 
   public function animales()
   {

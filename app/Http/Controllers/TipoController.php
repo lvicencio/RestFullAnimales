@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Tipo;
 class TipoController extends Controller
 {
   /**
@@ -13,7 +13,8 @@ class TipoController extends Controller
    */
   public function index()
   {
-      //
+      $tipos = Tipo::all();
+      return response()->json(['datos'=>$tipos], 202);
   }
 
   /**
@@ -45,7 +46,11 @@ class TipoController extends Controller
    */
   public function show($id)
   {
-      //
+      $tipo = Tipo::find($id);
+      if (!$tipo) {
+          return response()->json(['mensaje'=>'Tipo de Animal no encontrado','codigo'=>404], 404);
+      }
+      return response()->json(['datos'=>$tipo], 202);
   }
 
   /**

@@ -3,27 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Tipo;
 use App\Animal;
 
-class AnimalController extends Controller
+class TipoAnimalController extends Controller
 {
-    public function showAll()
-    {
-      return 'todos';
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-      $animal = Animal::all();
-      if (!$animal) {
-          return response()->json(['mensaje'=>'No se encuentran Animales','codigo'=>404], 404);
+        $tipo = Tipo::find($id);
+        $animales =$tipo->animales;
+        if (!$animales) {
+          return response()->json(['mensaje'=>'Animales no existen','codigo'=>404], 404);
       }
-      return response()->json(['datos'=>$animal], 202);
+      return response()->json(['datos'=>$animales], 202);
     }
 
     /**
@@ -55,11 +52,7 @@ class AnimalController extends Controller
      */
     public function show($id)
     {
-      $animal = Animal::find($id);
-      if (!$animal) {
-          return response()->json(['mensaje'=>'El Animal no es encontrado','codigo'=>404], 404);
-      }
-      return response()->json(['datos'=>$animal], 202);
+        //
     }
 
     /**
