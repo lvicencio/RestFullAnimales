@@ -110,6 +110,15 @@ class TipoController extends Controller
    */
   public function destroy($id)
   {
-      //
+    $tipo = Tipo::find($id);
+    if (!$tipo) {
+        return response()->json(['mensaje'=>'Tipo Animal no encontrado','codigo'=>404], 404);
+    }
+    $animales=$tipo->animales;
+    if (sizeof($animales)>0) {
+         return response()->json(['mensaje'=>'Tipo Animal tiene animales, no se puede eliminar, elimine los animales asociado primero','codigo'=>404], 404);
+    }
+    $tipo->delete();
+    return response()->json(['mensaje'=>'El Tipo Animal fue Eliminado','codigo'=>200], 200);
   }
 }

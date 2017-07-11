@@ -91,9 +91,67 @@ class TipoAnimalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $idTipo, $idAnimal)
     {
-        //
+      $metodo= $request->method();
+      $tipo= Tipo::find($idTipo);
+      if (!$tipo) {
+        return response()->json(['mensaje'=>'No se encuentra el Tipo de Animal','codigo'=>404], 404);
+      }
+      $animal= $tipo->animales()->find($idAnimal);
+      if (!$animal) {
+        return response()->json(['mensaje'=>'Animal no encontrado en el tipo seleccionado','codigo'=>404], 404);
+      }
+
+      $nombre=$request->get('nombre');
+      $habitad=$request->get('habitad');
+      $caracteristicas=$request->get('caracteristicas');
+      $reproduccion=$request->get('reproduccion');
+      $extremidades=$request->get('extremidades');
+//$tipo_id=$request->get('tipo_id');
+      $flag=false;
+
+      if ($metodo==='PATCH') {
+        if ($nombre!=null && $nombre!='') {
+          $animal->nombre=$nombre;
+          $flag=true;
+        }
+        if ($habitad!=null && $habitad!='') {
+          $animal->habitad=$habitad;
+          $flag=true;
+        }
+        if ($caracteristicas!=null && $caracteristicas!='') {
+          $animal->caracteristicas=$caracteristicas;
+          $flag=true;
+        }
+        if ($reproduccion!=null && $reproduccion!='') {
+          $animal->reproduccion=$reproduccion;
+          $flag=true;
+        }
+        if ($extremidades!=null && $extremidades!='') {
+          $animal->extremidades=$extremidades;
+          $flag=true;
+        }
+        if ($flag) {
+          $animal->save();
+          return response()->json(['mensaje'=>'Animal editado con exito con metodo PATCH','codigo'=>202],202);
+        }
+        return response()->json(['mensaje'=>'Animal NO editado (PATCH)','codigo'=>200],200);
+      }
+
+
+      if (!$nombre || !$habitad || !$caracteristicas || !$reproduccion || !$extremidades) {
+        return response()->json(['mensaje'=>'Faltan datos, Animal NO Modificado','codigo'=>404], 404);
+      }
+
+      $animal->nombre=$nombre;
+      $animal->habitad=$habitad;
+      $animal->caracteristicas=$caracteristicas;
+      $animal->reproduccion=$reproduccion;
+      $animal->extremidades=$extremidades;
+      $animal->save();
+
+      return response()->json(['mensaje'=>'Animal editado con exito con metodo PUT','codigo'=>202],202);
     }
 
     /**
@@ -102,8 +160,17 @@ class TipoAnimalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($idTipo, $idAnimal)
     {
-        //
+        $tipo = Tipo::find($idTipo);
+        if (!$tipo) {
+            return response()->json(['mensaje'=>'Tipo Animal no encontrado','codigo'=>404], 404);
+        }
+        $animal = $tipo->animales()->find($idAnimal);
+        if (!$animal) {
+            return response()->json(['mensaje'=>'Animal no se encuentra asociado al Tipo de Animal','codigo'=>404], 404);
+        }
+        $animal->delete();
+          return response()->json(['mensaje'=>'Animal Eliminado con exito','codigo'=>202],202);
     }
 }
