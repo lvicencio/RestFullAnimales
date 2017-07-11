@@ -35,7 +35,11 @@ class TipoController extends Controller
    */
   public function store(Request $request)
   {
-      //
+      if (!$request->get('nombre') || !$request->get('caracteristicas')) {
+        return response()->json(['mensaje'=>'Tipo no ingresado, datos invalidos','codigo'=>'422'],422);
+      }
+      Tipo::create($request->all());
+      return response()->json(['mensaje'=>'Tipo de Animal creado con exito'],202);
   }
 
   /**
@@ -73,7 +77,29 @@ class TipoController extends Controller
    */
   public function update(Request $request, $id)
   {
-      //
+      $metodo= $request->method();
+      $tipo= Tipo::find($id);
+      if ($metodo==='PATCH') {
+        $nombre=$request->get('nombre');
+        if ($nombre!=null && $nombre!='') {
+          $tipo->nombre=$nombre;
+        }
+        $caracteristicas=$request->get('caracteristicas');
+        if ($caracteristicas!=null && $caracteristicas!='') {
+          $tipo->caracteristicas=$caracteristicas;
+        }
+        $tipo->save();
+        return response()->json(['mensaje'=>'Tipo de Animal creado con exito con metodo PATCH'],202);
+      }
+      $nombre=$request->get('nombre');
+      $caracteristicas=$request->get('caracteristicas');
+      if (!$nombre || !$caracteristicas) {
+        return response()->json(['mensaje'=>'Faltan datos, Tipo NO Modificado','codigo'=>404], 404);
+      }
+      $tipo->nombre=$nombre;
+      $tipo->caracteristicas=$caracteristicas;
+      $tipo->save();
+      return response()->json(['mensaje'=>'Tipo de Animal creado con exito con metodo PUT'],202);
   }
 
   /**

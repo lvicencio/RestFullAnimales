@@ -39,9 +39,27 @@ class TipoAnimalController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request, $id)
+    {//animal, 'nombre', 'habitad', 'caracteristicas','reproduccion','extremidades','tipo_id',
+      if (!$request->get('nombre') || !$request->get('habitad')|| !$request->get('caracteristicas') ||
+      !$request->get('reproduccion') || !$request->get('extremidades') ) {
+        return response()->json(['mensaje'=>'Animal no ingresado, datos invalidos','codigo'=>'422'],422);
+      }
+      $tipo = Tipo::find($id);
+      if (!$tipo) {
+        return response()->json(['mensaje'=>'Tipo de Animal no existe', 'codigo'=>'404'],404);
+      }
+
+
+      Animal::create([
+        'nombre'=>$request->get('nombre'),
+        'habitad'=>$request->get('habitad'),
+        'caracteristicas'=>$request->get('caracteristicas'),
+        'reproduccion'=>$request->get('reproduccion'),
+        'extremidades'=>$request->get('extremidades'),
+        'tipo_id'=>$id
+        ]);
+      return response()->json(['mensaje'=>'Animal creado con exito','codigo'=>'201'],201);
     }
 
     /**
